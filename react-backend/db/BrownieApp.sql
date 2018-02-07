@@ -5,7 +5,7 @@ CREATE DATABASE BrownieApp;
 
 CREATE TABLE players (
   ID SERIAL PRIMARY KEY,
-  username VARCHAR,
+  username VARCHAR UNIQUE,
   password_digest VARCHAR
 );
 

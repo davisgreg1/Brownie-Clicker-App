@@ -17,25 +17,9 @@ function getAllPlayers(req, res, next) {
     });
 }
 
-
-function getSinglePlayer(req, res, next) {
-  db
-    .any("select * from players where username = ${username}", req.user)
-    .then(function(data) {
-      res.status(200).json({
-        status: "success",
-        data: data,
-        message: "Fetched one player"
-      });
-    })
-    .catch(function(err) {
-      return next(err);
-    });
-}
-
 function loginUser(req, res, next) {
   passport.authenticate("local", (err, user, info) => {
-    console.log("user:", user)
+    console.log("USER ISSSS:", user)
     if (err) {
       res.status(500).send("error while trying to log in");
       //if the user object if falsy send a '401 Unauthorized Error'
@@ -54,9 +38,19 @@ function loginUser(req, res, next) {
   })(req, res, next);
 }
 
-function logoutUser(req, res, next) {
-  req.logout();
-  res.status(200).send("log out success");
+function getSingleUser(req, res, next) {
+  db
+    .any("select * from players where username = ${username}", req.user)
+    .then(function(data) {
+      res.status(200).json({
+        status: "success",
+        data: data,
+        message: "Fetched one user"
+      });
+    })
+    .catch(function(err) {
+      return next(err);
+    });
 }
 
 function registerPlayer(req, res, next) {
@@ -81,10 +75,14 @@ function registerPlayer(req, res, next) {
     });
 }
 
+function logoutUser(req, res, next) {
+  req.logout();
+  res.status(200).send("log out success");
+}
+
 module.exports = {
-    getAllPlayers: getAllPlayers,
-  getSinglePlayer: getSinglePlayer,
+  getSingleUser: getSingleUser,
   registerPlayer: registerPlayer,
   loginUser: loginUser,
-  logoutuser: logoutUser
+  logoutUser: logoutUser
 };

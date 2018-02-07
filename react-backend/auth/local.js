@@ -16,7 +16,7 @@ passport.use(
       .any("SELECT * FROM players WHERE username=$1", [username])
       .then(rows => {
         const user = rows[0];
-        console.log("user: ", user);
+        console.log("user in passport.use(): ", user);
         if (!user) {
           return done(null, false);
         }
