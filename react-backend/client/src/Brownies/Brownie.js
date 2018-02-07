@@ -1,3 +1,14 @@
+import React from 'react'
+import ReactInterval from 'react-interval'
+import Modal from 'react-modal'
+
+const styles ={
+  img:{
+    width: "200px",
+    height: "300px"
+  }
+}
+
 class Brownie extends React.Component{
   constructor(){
     super()
@@ -8,19 +19,23 @@ class Brownie extends React.Component{
       grandma: 0,
       factory: 0,
       temple: 0,
+      laboratory: 0,
       grandmaPrice: 20,
-      factoryPrice: 50000,
-      templePrice: 500000,
-      multiplerPrice: 750,
-      multipler: 0,
+      factoryPrice: 500,
+      templePrice: 5000,
+      laboratoryPrice: 100000,
+      multiplerPrice: 100,
+      multipler: 1,
       hasGrandma: false,
       hasFactory: false,
       hasTemple: false,
-      grandmaMessage: '',
-      factoryMessage: '',
-      templeMessage: '',
-      gameMessage: ''
+      hasLaboratory: false,
+      isOpen: false
     }
+  }
+
+  handleOpenModal = () => {
+    this.setState({ isOpen: !this.state.isOpen })
   }
 
   clickBrownie = () =>{
@@ -40,41 +55,12 @@ class Brownie extends React.Component{
     }
   }
 
-
-/*Sets timeout for passive powerups*/
-
-  brownieGrandma = () =>{
-    const { count, grandma, hasGrandma } = this.state
-    if(hasGrandma){
-      setInterval(this.setState({
-        count: count + (4 * grandma)
-      }), 2000)
-    }
-  }
-
-  brownieFactory = () =>{
-    const { count, factory, hasFactory } = this.state
-    if(hasFactory){
-      setInterval(this.setState({
-        count: count + (100 * factory)
-      }), 2000)
-    }
-  }
-
-  brownieTemple = () =>{
-    const { count, temple, hasTemple } = this.state
-    if(hasFactory){
-      setInterval(this.setState({
-        count: count + (1000 * temple)
-      }), 2000)
-    }
-  }
-
 /*End of passive powerups*/
 
   brownieMultipler = () =>{
     const { multipler } = this.state
     this.setState({
+
       multipler: multipler + 1
     })
   }
@@ -143,10 +129,25 @@ class Brownie extends React.Component{
     }
     else {
       this.setState({
-        count: count - factoryPrice,
-        hasFactory: true,
-        factory: factory + 1,
-        factoryPrice: factoryPrice * factory
+        count: count - templePrice,
+        hasTemple: true,
+        temple: temple + 1,
+        templePrice: templePrice * temple
+      })
+    }
+  }
+
+  purchaseLaboratory = () =>{
+    const { count, laboratory, laboratoryPrice, hasLaboratory} = this.state
+    if(count < laboratoryPrice){
+      console.log('YOU BROKE FAM')
+    }
+    else {
+      this.setState({
+        count: count - laboratoryPrice,
+        hasLaboratory: true,
+        laboratory: laboratory + 1,
+        laboratoryPrice: laboratoryPrice * laboratory
       })
     }
   }
@@ -154,7 +155,7 @@ class Brownie extends React.Component{
   purchaseMultipler = () =>{
     const { count, multipler, multiplerPrice } = this.state
     if(count < multiplerPrice){
-      console.log('YOU CAN'/T' BUY THAT')
+      console.log('YOU BROKE BUY THAT')
     }
     else {
       this.setState({
@@ -166,133 +167,34 @@ class Brownie extends React.Component{
   }
 /*End of purchasing powerups*/
 
-  grandmaMessage = () =>{
-    const { grandma } = this.state
-    if(grandma && grandma === 1){
-      this.setState({
-        grandmaMessage: 'Grandma starts making you delicious brownies!'
-        gameMessage: 'You bought a grandma'
-      })
-      setTimeout(this.setState({
-        gameMessage: ''
-      }),3000)
-    }
-    else if(grandma > 1 && grandma <= 20){
-      this.setState({
-        grandmaMessage: 'Your grandmas bake you brownies!'
-        gameMessage: 'You bought a grandma'
-      })
-      setTimeout(this.setState({
-        gameMessage: ''
-      }),3000)
-    }
-    else if(grandma > 20 && grandma <= 100){
-      this.setState({
-        grandmaMessage: 'Your army of grandmas make you brownies'
-        gameMessage: 'You bought a grandma'
-      })
-      setTimeout(this.setState({
-        gameMessage: ''
-      }),3000)
-    }
-    else {
-      this.setState({
-        grandmaMessage: 'Your legions of grandmas make you countless brownies'
-        gameMessage: 'You bought a grandma'
-      })
-      setTimeout(this.setState({
-        gameMessage: ''
-      }),3000)
-    }
-  }
-
-  factoryMessage = () =>{
-    const { factory } = this.state
-    if(factory && factory === 1){
-      this.setState({
-        factoryMessage: 'Your factory starts making you delicious brownies!'
-        gameMessage: 'You bought a factory'
-      })
-      setTimeout(this.setState({
-        gameMessage: ''
-      }),3000)
-    }
-    else if(factory > 1 && factory <= 10){
-      this.setState({
-        factoryMessage: 'Your factories bake you brownies!'
-        gameMessage: 'You bought a factory'
-      })
-      setTimeout(this.setState({
-        gameMessage: ''
-      }),3000)
-    }
-    else if(factory > 10 && factory <= 50){
-      this.setState({
-        factoryMessage: 'Your vast network of factories bakes you all of the brownies'
-        gameMessage: 'You bought a factory'
-      })
-      setTimeout(this.setState({
-        gameMessage: ''
-      }),3000)
-    }
-    else {
-      this.setState({
-        factoryMessage: 'Your network of factories grows, clouding the land in smoke and batter'
-        gameMessage: 'You bought a factory'
-      })
-      setTimeout(this.setState({
-        gameMessage: ''
-      }),3000)
-    }
-  }
-
-  templeMessage = () =>{
-    const { temple } = this.state
-    if(temple && temple === 1){
-      this.setState({
-        templeMessage: 'Your temple worshippers bake you brownies!'
-        gameMessage: 'You bought a factory'
-      })
-      setTimeout(this.setState({
-        gameMessage: ''
-      }),3000)
-    }
-    else if(temple > 1 && temple <= 5){
-      this.setState({
-        templeMessage: 'Your temples and its many worshippers bake you brownies!'
-        gameMessage: 'You bought a factory'
-      })
-      setTimeout(this.setState({
-        gameMessage: ''
-      }),3000)
-    }
-    else if(temple > 5 && temple <= 20){
-      this.setState({
-        templeMessage: 'Your army of brownie woshippers bake you brownies'
-        gameMessage: 'You bought a factory'
-      })
-      setTimeout(this.setState({
-        gameMessage: ''
-      }),3000)
-    }
-    else {
-      this.setState({
-        templeMessage: 'The gods take notice of your many temples and help you bake brownies'
-        gameMessage: 'You bought a factory'
-      })
-      setTimeout(this.setState({
-        gameMessage: ''
-      }),3000)
-    }
-  }
-
-
   render(){
+    const { count, grandma, factory, temple, hasGrandma, hasFactory, hasTemple, laboratory, hasLaboratory } = this.state
+
     return(
       <div>
+        <ReactInterval
+        timeout={3000}
+        enabled={hasGrandma}
+        callback={() => this.setState({ count: count + (10 * grandma)})}
+        />
+        <ReactInterval
+        timeout={3000}
+        enabled={hasFactory}
+        callback={() => this.setState({ count: count + (100 * factory)})}
+        />
+        <ReactInterval
+        timeout={3000}
+        enabled={hasTemple}
+        callback={() => this.setState({ count: count + (1000 * temple)})}
+        />
+        <ReactInterval
+        timeout={3000}
+        enabled={hasLaboratory}
+        callback={() => this.setState({ count: count + (10000 * laboratory)})}
+        />
         <div className='brownieDiv'>
           <img
-          style={styles.img}
+          styles={styles.img}
           src='http://www.makeitlikeaman.com/wp-content/uploads/2014/03/Brownies-How-To-Make-Easily.png'
           alt='brownie'
           onClick={this.clickBrownie}
@@ -300,11 +202,43 @@ class Brownie extends React.Component{
           <p>BROWNIES: {this.state.count}</p>
           <p>MULTIPLER: {this.state.multipler}x!!!</p>
           <div>
-            <button onClick={this.purchaseGrandma} onClick={this.grandmaMessage}>Grandma</button>
-            <button onClick={this.purchaseFactory} onClick={this.factoryMessage}>Factory</button>
-            <button onClick={this.purchaseTemple} onClick={this.templeMessage}>Temple</button>
-            <button onClick={this.purchaseMultipler}>Multipler</button>
           </div>
+          <div>
+            <button onClick={this.handleOpenModal}> Open Brownie Store </button>
+                <Modal
+                  isOpen={this.state.isOpen}
+                  onRequestClose={this.handleOpenModal}
+                  >
+                  <button onClick={this.purchaseGrandma}>Grandma</button>
+                  <button onClick={this.purchaseFactory}>Factory</button>
+                  <button onClick={this.purchaseTemple}>Temple</button>
+                  <button onClick={this.purchaseMultipler}>Multipler</button>
+                  <button onClick={this.purchaseLaboratory}>Laboratory</button>
+                  <button onClick={this.handleOpenModal}>CLOSE</button>
+                  </Modal>
+            </div>
+            <div>
+              <label>
+                Grandmas:
+                {grandma}
+              </label>
+              {" "}
+              <label>
+                Factories:
+                {factory}
+              </label>
+              {" "}
+              <label>
+                Temples:
+                {temple}
+              </label>
+              {" "}
+              <label>
+                Laboratories:
+                {laboratory}
+              </label>
+              {" "}
+            </div>
           <div>
             <h4>News Reel</h4>
             <p>{this.state.grandmaMessage}</p>
