@@ -30,7 +30,7 @@ class NewPlayer extends React.Component {
       });
       return;
     }
-
+/** fetch the backend route to enter a new user into db */
     axios
       .post("/player/new", {
         username: username,

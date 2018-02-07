@@ -1,49 +1,106 @@
 import React from "react";
 import { Route, Link, Switch } from "react-router-dom";
 import axios from "axios";
+import { Redirect } from "react-router";
 
 import NewPlayer from "./NewPlayer";
 import LoginUser from "./LoginUser";
-// import LogoutUser from "./LogoutUser";
+import LogoutUser from "./LogoutUser";
 
 class Players extends React.Component {
   constructor() {
     super();
     this.state = {
-      user: null
-    };
+        user: null,
+        usernameInput: "",
+        passwordInput: "",
+        message: "",
+        loggedIn: false
+      };
   }
-
-  componentDidMount() {
-    // fetch('/player')
-    //   .then(res => res.json())
-    //   .then((player) => {
-    //     let data = player.data;
-    //     this.setState({ users: data })}
-    //   );
-  }
-  setUser = user => {
-    this.setState({ user: user });
+/** This function is for the LogIn feature */
+  handleUsernameChange = e => {
+    this.setState({
+      usernameInput: e.target.value
+    });
   };
+
+  /** This function is for the LogIn feature */
+  handlePasswordChange = e => {
+    this.setState({
+      passwordInput: e.target.value
+    });
+  };
+
+  /** This function is for the LogIn feature */
+  submitForm = e => {
+    e.preventDefault();
+    const { usernameInput, passwordInput, message } = this.state;
+
+    if (usernameInput.length < 3) {
+      this.setState({
+        message: "Username length must be at least 3"
+      });
+      return;
+    }
+    axios
+      .post("/player/login", {
+        username: usernameInput,
+        password: passwordInput
+      })
+      .then(res => {
+        // this.props.setUser(res.data);
+        this.setState({
+          loggedIn: true,
+          user: res.data
+        });
+      })
+      .catch(err => {
+        this.setState({
+          usernameInput: "",
+          passwordInput: "",
+          message: "user not found"
+        });
+      });
+  };
+
 
   renderLogin = () => {
-    return <LoginUser setUser={this.setUser} />;
+      const { user, usernameInput, passwordInput, message, loggedIn } = this.state;
+
+        return <LoginUser  username={usernameInput} password={passwordInput} handleUsernameChange={this.handleUsernameChange} handlePasswordChange={this.handlePasswordChange} submitForm={this.submitForm} bool={loggedIn} message={message} />
   };
 
-//   renderLogout = () => {
-//       return <LogoutUser />;
-//   }
+
+  renderLogout = () => {
+    const { user, usernameInput, passwordInput, message, loggedIn } = this.state
+
+//fetch the backend route
+        axios
+        .get("/player/logout")
+        .then(res => {
+         this.setState({
+        user: null,
+        loggedIn: false,
+        usernameInput: "",
+        passwordInput: ""
+      });
+    })
+
+//user from the state is used as a boolean to successfully log a user out.
+    return <LogoutUser bool={user}/>
+  }
 
 
   render() {
-    console.log("users: ", this.state);
+
     const { user } = this.state;
     return (
       <div className="App">
         {user ? `welcome, ${user.username}` : ""}
         <Route path="/player/new" component={NewPlayer} />
         <Route path="/player/login" render={this.renderLogin} />
-        {/* <Route path="/player/logout" render={this.renderLogout} /> */}
+        <Route path="/player/logout" render={this.renderLogout} />
       </div>
     );
   }
