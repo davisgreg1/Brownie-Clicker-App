@@ -1,26 +1,30 @@
 import React from "react";
 import axios from "axios";
+import { Redirect } from "react-router";
+
 
 class NewPlayer extends React.Component {
-  state = { usernameInput: "", passwordInput: "", message: "" };
+  constructor(){
+    super()
+    this.state = { 
+              username: "", 
+              password: "", 
+               message: "" 
+            };
+  }
 
-  handleUsernameChange = e => {
-    this.setState({
-      usernameInput: e.target.value
-    });
-  };
 
-  handlePasswordChange = e => {
+  handleInput = e => {
     this.setState({
-      passwordInput: e.target.value
+      [e.target.name]: e.target.value
     });
   };
 
   submitForm = e => {
     e.preventDefault();
-    const { usernameInput, passwordInput } = this.state;
+    const { username, password } = this.state;
 
-    if (usernameInput.length < 3) {
+    if (username.length < 3) {
       this.setState({
         message: "Username length must be at least 3"
       });
@@ -29,29 +33,29 @@ class NewPlayer extends React.Component {
 
     axios
       .post("/player/new", {
-        username: usernameInput,
-        password: passwordInput
+        username: username,
+        password: password
       })
       .then(res => {
         console.log(res.data);
         this.setState({
-          usernameInput: "",
-          passwordInput: "",
-          message: "Inserted User"
+          username: "",
+          password: "",
+          message: `Thank you for registering.`
         });
       })
       .catch(err => {
         console.log("error: ", err);
         this.setState({
-          usernameInput: "",
-          passwordInput: "",
+          username: "",
+          password: "",
           message: "Error inserting user"
         });
       });
   };
 
   render() {
-    const { usernameInput, passwordInput, message } = this.state;
+    const { username, password, message } = this.state;
     return (
       <div>
         <h1> New Player </h1>
@@ -62,8 +66,8 @@ class NewPlayer extends React.Component {
             <input
               type="text"
               name="username"
-              value={usernameInput}
-              onChange={this.handleUsernameChange}
+              value={username}
+              onChange={this.handleInput}
             />
           </label>
 
@@ -71,9 +75,9 @@ class NewPlayer extends React.Component {
             Password:
             <input
               type="text"
-              name="username"
-              value={passwordInput}
-              onChange={this.handlePasswordChange}
+              name="password"
+              value={password}
+              onChange={this.handleInput}
             />
           </label>
 
@@ -85,4 +89,5 @@ class NewPlayer extends React.Component {
   }
 }
 
-export default NewUser;
+
+export default NewPlayer;
